@@ -9,11 +9,12 @@ from django.utils import timezone
 from db.models import Order, Ticket, User, MovieSession
 
 
+@transaction.atomic
 def create_order(
         tickets: List[Dict[str, int]],
         username: str,
         date: Optional[str] = None
-) -> Order:
+    ) -> Order:
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -22,20 +23,22 @@ def create_order(
     if date:
         dt_naive = datetime.strptime(date, "%Y-%m-%d %H:%M")
         order_create_at = timezone.make_aware(dt_naive)
-    with transaction.atomic():
-        order = Order.objects.create(
+    order = Order.objects.create(
             user=user,
             created_at=order_create_at
             )
-        for _ in tickets:
-            movie_session = MovieSession.objects.get(id=_['movie_session'])
+    for _ in tickets:
+        movie_session = MovieSession.objects.get(id=_["movie_session"])
 
-            Ticket.objects.create(
+        Ticket.objects.create(
                 order=order,
                 movie_session=movie_session,
-                row=_['row'],
-                seat=_['seat']
-            )
+                row=_["row"],
+                seat=_["seat"]
+        )
+    if order_create_at:
+        aware_time = order.created_at
+        order.created_at = aware_time.replace(tzinfo=None)
     return order
 
 

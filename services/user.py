@@ -1,32 +1,27 @@
-from typing import Optional, Any
+from django.contrib.auth import get_user_model
+from typing import Optional
 
-from db.models import User
 
 
+User = get_user_model()
 def create_user(username: str,
                 password: str,
                 email: Optional[str] = None,
                 first_name: Optional[str] = None,
                 last_name: Optional[str] = None
-    ) -> User:
-    user = User.objects.create_user(
+                ) -> User:
+    return User.objects.create_user(
         username=username,
         email=email,
         password=password,
+        first_name=first_name or "",
+        last_name=last_name or ""
     )
 
-    if first_name is not None:
-        user.first_name = first_name
-    if last_name is not None:
-        user.last_name = last_name
 
-    if first_name is not None or last_name is not None:
-        user.save()
+def get_user(user_id: int) -> User:
+    return User.objects.get(pk=user_id)
 
-    return user
-
-def get_user(user_id: int) -> Optional[User]:
-    return User.objects.get(id=user_id)
 
 def update_user(
     user_id: int,
@@ -37,7 +32,7 @@ def update_user(
     last_name: Optional[str] = None
 ) -> Optional[User]:
     try:
-        user = User.objects.get(id=user_id)
+        user = get_user(user_id)
     except User.DoesNotExist:
         return None
 
@@ -47,8 +42,12 @@ def update_user(
         user.email = email
     if first_name is not None:
         user.first_name = first_name
+    elif user.first_name is None:
+        user.first_name = ""
     if last_name is not None:
         user.last_name = last_name
+    elif user.last_name is None:
+        user.last_name = ""
     if password is not None:
         user.set_password(password)
 
