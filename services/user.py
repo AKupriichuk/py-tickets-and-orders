@@ -15,8 +15,8 @@ def create_user(username: str,
         username=username,
         email=email,
         password=password,
-        first_name=first_name,
-        last_name=last_name
+        first_name=first_name or "",
+        last_name=last_name or ""
     )
 
 
@@ -43,8 +43,12 @@ def update_user(
         user.email = email
     if first_name is not None:
         user.first_name = first_name
+    elif first_name is None:
+        user.first_name = ""
     if last_name is not None:
         user.last_name = last_name
+    elif last_name is None:
+        user.last_name = ""
     if password is not None:
         user.set_password(password)
 

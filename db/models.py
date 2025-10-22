@@ -79,8 +79,7 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        formatted_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
-        return f"<Order: {formatted_time}>"
+        return self.created_at.strftime("%Y-%m-%d %H:%M:%S")
 
     class Meta:
         ordering = ["-created_at"]
@@ -101,10 +100,7 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return (
-            f"<Ticket: {str(self.movie_session)}"
-            f" (row: {self.row}, seat: {self.seat})>"
-        )
+        return f"{str(self.movie_session)} (row: {self.row}, seat: {self.seat})"
 
     def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
