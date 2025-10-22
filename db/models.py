@@ -58,7 +58,7 @@ class MovieSession(models.Model):
     )
 
     def __str__(self) -> str:
-        formatted_time = self.show_time.strftime('%Y-%m-%d %H:%M:%S')
+        formatted_time = self.show_time.strftime("%Y-%m-%d %H:%M:%S")
         return f"{self.movie.title} {formatted_time}"
 
 
@@ -68,7 +68,10 @@ class User(AbstractUser):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(default=timezone.now, null=True, blank=True)
+    created_at = models.DateTimeField(
+        default=timezone.now,
+        null=True,
+        blank=True)
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -76,7 +79,7 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        formatted_time = self.created_at.strftime('%Y-%m-%d %H:%M:%S')
+        formatted_time = self.created_at.strftime("%Y-%m-%d %H:%M:%S")
         return f"<Order: {formatted_time}>"
 
     class Meta:
