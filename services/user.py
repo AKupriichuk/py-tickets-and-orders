@@ -2,8 +2,9 @@ from django.contrib.auth import get_user_model
 from typing import Optional
 
 
-
 User = get_user_model()
+
+
 def create_user(username: str,
                 password: str,
                 email: Optional[str] = None,

@@ -2,8 +2,6 @@ from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 from django.core.exceptions import ValidationError
 from django.db import models
-from datetime import timezone
-from django.utils import timezone
 
 
 class Genre(models.Model):
@@ -78,7 +76,6 @@ class Order(models.Model):
     def __str__(self) -> str:
         return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
-
     class Meta:
         ordering = ["-created_at"]
 
@@ -98,7 +95,8 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"{str(self.movie_session)} (row: {self.row}, seat: {self.seat})"
+        return (f"{str(self.movie_session)}"
+                f" (row: {self.row}, seat: {self.seat})")
 
     def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
@@ -123,7 +121,6 @@ class Ticket(models.Model):
     def save(self, *args, **kwargs) -> None:
         self.full_clean()
         super().save(*args, **kwargs)
-
 
     class Meta:
         constraints = [

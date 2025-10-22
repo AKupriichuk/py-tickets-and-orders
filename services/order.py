@@ -4,8 +4,6 @@ from django.db import transaction
 from django.db.models import QuerySet
 from datetime import datetime
 
-from django.utils import timezone
-
 from db.models import Order, Ticket, User, MovieSession
 
 
@@ -14,7 +12,7 @@ def create_order(
         tickets: List[Dict[str, int]],
         username: str,
         date: Optional[str] = None
-    ) -> Order:
+) -> Order:
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
@@ -27,10 +25,10 @@ def create_order(
         movie_session = MovieSession.objects.get(id=_["movie_session"])
 
         Ticket.objects.create(
-                order=order,
-                movie_session=movie_session,
-                row=_["row"],
-                seat=_["seat"]
+            order=order,
+            movie_session=movie_session,
+            row=_["row"],
+            seat=_["seat"]
         )
     return order
 
