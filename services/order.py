@@ -8,13 +8,15 @@ from datetime import datetime
 from db.models import Order, Ticket, MovieSession
 
 
+User = get_user_model()
+
+
 @transaction.atomic
 def create_order(
         tickets: List[Dict[str, int]],
         username: str,
         date: Optional[str] = None
 ) -> Order:
-    User = get_user_model()
     try:
         user = User.objects.get(username=username)
     except User.DoesNotExist:
