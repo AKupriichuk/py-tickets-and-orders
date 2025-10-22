@@ -19,14 +19,10 @@ def create_order(
         user = User.objects.get(username=username)
     except User.DoesNotExist:
         raise User.DoesNotExist("Username not found")
-    order_create_at = None
+    order = Order.objects.create(user=user)
     if date:
-        dt_naive = datetime.strptime(date, "%Y-%m-%d %H:%M")
-        order_create_at = timezone.make_aware(dt_naive)
-    order = Order.objects.create(
-            user=user,
-            created_at=order_create_at
-            )
+        order.created_at = datetime.strptime(date, "%Y-%m-%d %H:%M")
+        order.save()
     for _ in tickets:
         movie_session = MovieSession.objects.get(id=_["movie_session"])
 
@@ -36,9 +32,6 @@ def create_order(
                 row=_["row"],
                 seat=_["seat"]
         )
-    if order_create_at:
-        aware_time = order.created_at
-        order.created_at = aware_time.replace(tzinfo=None)
     return order
 
 

@@ -59,9 +59,7 @@ class MovieSession(models.Model):
     )
 
     def __str__(self) -> str:
-        utc_time = self.show_time.astimezone(timezone.utc).replace(tzinfo=None)
-        formatted_time = utc_time.strftime("%Y-%m-%d %H:%M:%S")
-        return f"{self.movie.title} {formatted_time}"
+        return f"{self.movie.title} {self.show_time}"
 
 
 class User(AbstractUser):
@@ -70,7 +68,7 @@ class User(AbstractUser):
 
 
 class Order(models.Model):
-    created_at = models.DateTimeField(default=timezone.now, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -78,9 +76,7 @@ class Order(models.Model):
     )
 
     def __str__(self) -> str:
-        utc_time = self.created_at.astimezone(timezone.utc)
-        formatted_time = utc_time.strftime("%Y-%m-%d %H:%M:%S")
-        return f"{formatted_time}+00:00"
+        return f"{self.created_at.strftime('%Y-%m-%d %H:%M:%S')}"
 
 
     class Meta:
@@ -102,7 +98,7 @@ class Ticket(models.Model):
     seat = models.IntegerField()
 
     def __str__(self) -> str:
-        return f"<Ticket: {str(self.movie_session)} (row: {self.row}, seat: {self.seat})>"
+        return f"{str(self.movie_session)} (row: {self.row}, seat: {self.seat})"
 
     def clean(self) -> None:
         cinema_hall = self.movie_session.cinema_hall
